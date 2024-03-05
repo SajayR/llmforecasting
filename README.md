@@ -58,7 +58,15 @@ A point to be noted is that we expect better results from larger models, as some
 
 There are multiple different LSTM models we built, with the point being that we wanted the best representation from LSTM's for each scenario. 
 Two LSTM models were trained for two different context lengths; a week and 3 days. For both, we split the datapoints into sets of 8 days each, where the 7 days acted as context and 8th day acted as the target output, and careful consideration was taken to make sure the sets did not overlap to prevent data leakage.
+The following metrics were obtained for comparision with LLM's
 
+* Mean Absolute Error (On scaled-down data): **0.0570**
+* Mean Squared Error (On scaled-down data): **0.0076**
+* Root Mean Squared Error (On scaled-down data): **0.0874**
+* Mean Absolute Error (On original scale): **33.3631**
+* Mean Squared Error (On original scale): **3018.4822**
+* Root Mean Squared Error (On original scale): **54.9407**
+* Mean Absolute Percentage Error: **78.25%**
 
 
 #### Sample Predictions
