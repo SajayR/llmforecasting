@@ -39,22 +39,7 @@ To streamline the analysis, the dataset was truncated to focus on the first six 
 ### Data Cleaning
 Owing to unknown variables at the weather stations, there are multiple missing values particular time periods. To mitigate this issue and maintain the integrity of our time-series analysis, we employed linear interpolation for filling these gaps. This method ensures a coherent dataset by estimating missing values based on the linear relationships observed in the surrounding data points, 
 
-## Task 2: Setup LLM model locally and showcase zero-shot performance
-
-Model Selection: In selecting models for this task, our priority was to focus on pure predictive capabilities of pre-trained LLMs without the additional layers tailored for chat or instruction following, which could potentially detract from performance in a forecasting context. 
-The primary models chosen were 7 billion parameter versions of 
-   * Llama2
-   * Gemma
-   * Falcon
-
-The consistent limitation of 7B parameters for all the models was due to local memory limitations.
-A point to be noted is that we expect better results from larger models, as some students working on similiar projects have noted on online forums.
-
-
-
-
-
-## Task 3: LSTM Baseline
+## Task 2: LSTM Baseline
 
 There are multiple different LSTM models we built, with the point being that we wanted the best representation from LSTM's for each scenario. 
 Two LSTM models were trained for two different context lengths; a week and 3 days. For both, we split the datapoints into sets of 8 days each, where the 7 days acted as context and 8th day acted as the target output, and careful consideration was taken to make sure the sets did not overlap to prevent data leakage.
@@ -88,6 +73,29 @@ Zoomed in Graphs for better visualisation
 ![NO2_day](https://github.com/SajayR/llmforecasting/assets/62949586/85e1e1c2-3edc-4488-91d5-ec2f881f46a5)
 
 ![NO_day](https://github.com/SajayR/llmforecasting/assets/62949586/857bc432-f418-4607-b8c9-04632d753cd2)
+
+
+## Task 38000/200 * 5: Setup LLM model locally and showcase zero-shot performance
+
+Model Selection: In selecting models for this task, our priority was to focus on pure predictive capabilities of pre-trained LLMs without the additional layers tailored for chat or instruction following, which could potentially detract from performance in a forecasting context. 
+The primary models chosen were 7 billion parameter versions of 
+   * Llama2
+   * Falcon
+
+The consistent limitation of 7B parameters for all the models was due to local memory limitations.
+A point to be noted is that we expect better results from larger models, as some students working on similiar projects have noted on online forums.
+
+
+#### Week Context length
+When provided a week's worth of context (168 hours), the Falcon-7B model performed exceptionally better when compared to the LLama2 model, which kept deviating off into alternate conversations past 15-16 hours with a high temperature, or would get stuck repeating the same values at lower temperatures. The Falcon-7B model stuck to the prediction for the entire time, and a sample prediction can be seen here
+
+##### Falcon
+![WhatsApp Image 2024-03-05 at 6 22 19 PM](https://github.com/SajayR/llmforecasting/assets/62949586/762ae59c-5a7a-46b7-b796-e6160b4eae97)
+
+
+Llama2 kept deviating from the predictions and starting off an irrelevant conversation, and while a lower temperature did make it follow the format and attempt to predict the next values, it kept getting into a repeating loop, where it would keep repeating the same values, as seen below:
+ ![WhatsApp Image 2024-03-05 at 7 08 22 PM](https://github.com/SajayR/llmforecasting/assets/62949586/e685bc59-4a20-4ddc-be89-7fcd8514c3f2)
+
 
 
 ## Task 4: Showcase performance of OS LLM made for time-series forecasting
