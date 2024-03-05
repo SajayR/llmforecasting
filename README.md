@@ -42,7 +42,7 @@ Owing to unknown variables at the weather stations, there are multiple missing v
 ## Task 2: LSTM Baseline
 
 There are multiple different LSTM models we built, with the point being that we wanted the best representation from LSTM's for each scenario. 
-Two LSTM models were trained for two different context lengths; a week and 3 days. For both, we split the datapoints into sets of 8 days each, where the 7 days acted as context and 8th day acted as the target output, and careful consideration was taken to make sure the sets did not overlap to prevent data leakage.
+Two LSTM models were trained for a context length of a week, with the prediction of day. The datapoints into sets of 8 days each, where the 7 days acted as context and 8th day acted as the target output, and careful consideration was taken to make sure the sets did not overlap to prevent data leakage.
 The following metrics were obtained for comparision with LLM's
 
 * Mean Absolute Error (On scaled-down data): **0.0570**
@@ -77,7 +77,7 @@ Zoomed in Graphs for better visualisation
 
 ## Task 3: Setup LLM model locally and showcase zero-shot performance
 
-Model Selection: In selecting models for this task, our priority was to focus on pure predictive capabilities of pre-trained LLMs without the additional layers tailored for chat or instruction following, which could potentially detract from performance in a forecasting context. 
+**Model Selection**: In selecting models for this task, our priority was to focus on pure predictive capabilities of pre-trained LLMs without the additional layers tailored for chat or instruction following, which could potentially detract from performance in a forecasting context. 
 The primary models chosen were 7 billion parameter versions of 
    * Llama2
    * Falcon
@@ -93,10 +93,29 @@ When provided a week's worth of context (168 hours), the Falcon-7B model perform
 ![WhatsApp Image 2024-03-05 at 6 22 19 PM](https://github.com/SajayR/llmforecasting/assets/62949586/762ae59c-5a7a-46b7-b796-e6160b4eae97)
 
 
-Llama2 kept deviating from the predictions and starting off an irrelevant conversation, and while a lower temperature did make it follow the format and attempt to predict the next values, it kept getting into a repeating loop, where it would keep repeating the same values, as seen below:
+
+#### LLama2
+
+_Stats_
+
+* Mean Absolute Error: 31.0952
+* Mean Squared Error: 2756.654
+* Root Mean Squared Error: 52.503
+* Mean Absolute Percentage Error: 29.5112%
+
+Llama2 kept deviating from the predictions and starting off an irrelevant conversation, and while a lower temperature did make it follow the format and attempt to predict the next values, it kept getting into a repeating loop, where it would keep repeating the same values, as seen with the linear predicted line below:
  ![WhatsApp Image 2024-03-05 at 7 08 22 PM](https://github.com/SajayR/llmforecasting/assets/62949586/e685bc59-4a20-4ddc-be89-7fcd8514c3f2)
 
 
 
+## Task 4: Showcase performance of any OS LLM trained for Time-series forecasting
 
+**Model Selection**: For this task, we chose the LAG-Llama model as proposed in the paper ![Lag-Llama: Towards Foundation Models for
+Probabilistic Time Series Forecasting](https://time-series-foundation-models.github.io/lag-llama.pdf). The paper introduces a probabilistic LLM model tuned on multiple time-series datasets ranging from energy, transportation, economics, air-quality etc which enables commendable performance on zero-shot performance (on data that is not in the training data).
 
+The model had access to the longest context length (~30 days), and had the following metrics, the best compared to all other alternatives
+
+* Mean Absolute Error: 28.385120391845703
+* Mean Squared Error: 1930.009521484375
+* Root Mean Squared Error: 36.544639587402344
+* Mean Absolute Percentage Error: 52.54457712173462%
