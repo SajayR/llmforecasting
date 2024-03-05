@@ -75,7 +75,7 @@ Zoomed in Graphs for better visualisation
 ![NO_day](https://github.com/SajayR/llmforecasting/assets/62949586/857bc432-f418-4607-b8c9-04632d753cd2)
 
 
-## Task 38000/200 * 5: Setup LLM model locally and showcase zero-shot performance
+## Task 3: Setup LLM model locally and showcase zero-shot performance
 
 Model Selection: In selecting models for this task, our priority was to focus on pure predictive capabilities of pre-trained LLMs without the additional layers tailored for chat or instruction following, which could potentially detract from performance in a forecasting context. 
 The primary models chosen were 7 billion parameter versions of 
@@ -98,6 +98,5 @@ Llama2 kept deviating from the predictions and starting off an irrelevant conver
 
 
 
-## Task 4: Showcase performance of OS LLM made for time-series forecasting
 
 
