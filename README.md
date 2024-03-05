@@ -41,8 +41,47 @@ Owing to unknown variables at the weather stations, there are multiple missing v
 
 ## Task 2: LSTM Baseline
 
-There are multiple different LSTM models we built, with the point being that we wanted the best representation from LSTM's for each scenario. 
-Two LSTM models were trained for a context length of a week, with the prediction of day. The datapoints into sets of 8 days each, where the 7 days acted as context and 8th day acted as the target output, and careful consideration was taken to make sure the sets did not overlap to prevent data leakage.
+The LSTM model was trained for a context length of a week, with the prediction of day. The datapoints was split from sklearn.metrics import mean_absolute_error, mean_squared_error
+import numpy as np
+
+def mean_absolute_percentage_error(y_true, y_pred): 
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+
+model.eval()  # Set the model to evaluation mode
+predictions, actuals = [], []
+
+with torch.no_grad():
+    for inputs, labels in test_loader:
+        inputs = inputs.to(device)
+        outputs = model(inputs)
+        # Reshape or process outputs if necessary
+        outputs = outputs.view(outputs.size(0), 24, 5)  # Adjust based on your output shape
+        predictions.append(outputs.cpu().numpy())
+        actuals.append(labels.numpy())
+
+# Concatenate all the batches
+predictions = np.concatenate(predictions, axis=0)
+actuals = np.concatenate(actuals, axis=0)
+
+# Inverse transform predictions and actuals if you scaled your data
+# predictions = scaler.inverse_transform(predictions.reshape(-1, 5)).reshape(predictions.shape)
+# actuals = scaler.inverse_transform(actuals.reshape(-1, 5)).reshape(actuals.shape)
+
+# Flatten the arrays to compute the errors
+predictions_flat = predictions.flatten()
+actuals_flat = actuals.flatten()
+
+# Calculate error metrics
+mae = mean_absolute_error(actuals_flat, predictions_flat)
+mse = mean_squared_error(actuals_flat, predictions_flat)
+rmse = np.sqrt(mse)
+mape = mean_absolute_percentage_error(actuals_flat, predictions_flat)
+
+print(f'MAE: {mae:.4f}')
+print(f'MSE: {mse:.4f}')
+print(f'RMSE: {rmse:.4f}')
+print(f'MAPE: {mape:.4f}%')
+into sets of 8 days each, where the 7 days acted as context and 8th day acted as the target output, and careful consideration was taken to make sure the sets did not overlap to prevent data leakage.
 The following metrics were obtained for comparision with LLM's
 
 * Mean Absolute Error (On scaled-down data): **0.0570**
@@ -90,6 +129,17 @@ A point to be noted is that we expect better results from larger models, as some
 When provided a week's worth of context (168 hours), the Falcon-7B model performed exceptionally better when compared to the LLama2 model, which kept deviating off into alternate conversations past 15-16 hours with a high temperature, or would get stuck repeating the same values at lower temperatures. The Falcon-7B model stuck to the prediction for the entire time, and a sample prediction can be seen here
 
 ##### Falcon
+
+_Stats_
+
+* Mean Absolute Error: 23.249
+* Mean Squared Error: 1391.505
+* Root Mean Squared Error: 37.20
+* Mean Absolute Percentage Error: 20.8923%
+
+
+The Falcon model performed extremely well at the task, surpassing even the Time-Series LLM (as we test in the next section) in evaluation metrics.
+
 ![WhatsApp Image 2024-03-05 at 6 22 19 PM](https://github.com/SajayR/llmforecasting/assets/62949586/762ae59c-5a7a-46b7-b796-e6160b4eae97)
 
 
@@ -113,7 +163,16 @@ Llama2 kept deviating from the predictions and starting off an irrelevant conver
 **Model Selection**: For this task, we chose the LAG-Llama model as proposed in the paper ![Lag-Llama: Towards Foundation Models for
 Probabilistic Time Series Forecasting](https://time-series-foundation-models.github.io/lag-llama.pdf). The paper introduces a probabilistic LLM model tuned on multiple time-series datasets ranging from energy, transportation, economics, air-quality etc which enables commendable performance on zero-shot performance (on data that is not in the training data).
 
-The model had access to the longest context length (~30 days), and had the following metrics, the best compared to all other alternatives
+With the same context as the other models of 7 days into a prediction of a day, the LAG-Llama got the following metrics in eval:
+
+* Mean Absolute Error: 28.377
+* Mean Squared Error: 2099.52
+* Root Mean Squared Error: 34.193
+* Mean Absolute Percentage Error: 28.730%
+
+![image](https://github.com/SajayR/llmforecasting/assets/62949586/2dd9d2c6-38c4-499e-ac3d-6787897722e7)
+
+Just for the sake of science, we reran the model with a context of the ~45 days and it surprisingly did not affect our results in a positive way significantly, infact, the RMSE score even increased by 2 points.
 
 * Mean Absolute Error: 28.385120391845703
 * Mean Squared Error: 1930.009521484375
