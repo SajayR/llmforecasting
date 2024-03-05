@@ -41,47 +41,7 @@ Owing to unknown variables at the weather stations, there are multiple missing v
 
 ## Task 2: LSTM Baseline
 
-The LSTM model was trained for a context length of a week, with the prediction of day. The datapoints was split from sklearn.metrics import mean_absolute_error, mean_squared_error
-import numpy as np
-
-def mean_absolute_percentage_error(y_true, y_pred): 
-    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
-
-model.eval()  # Set the model to evaluation mode
-predictions, actuals = [], []
-
-with torch.no_grad():
-    for inputs, labels in test_loader:
-        inputs = inputs.to(device)
-        outputs = model(inputs)
-        # Reshape or process outputs if necessary
-        outputs = outputs.view(outputs.size(0), 24, 5)  # Adjust based on your output shape
-        predictions.append(outputs.cpu().numpy())
-        actuals.append(labels.numpy())
-
-# Concatenate all the batches
-predictions = np.concatenate(predictions, axis=0)
-actuals = np.concatenate(actuals, axis=0)
-
-# Inverse transform predictions and actuals if you scaled your data
-# predictions = scaler.inverse_transform(predictions.reshape(-1, 5)).reshape(predictions.shape)
-# actuals = scaler.inverse_transform(actuals.reshape(-1, 5)).reshape(actuals.shape)
-
-# Flatten the arrays to compute the errors
-predictions_flat = predictions.flatten()
-actuals_flat = actuals.flatten()
-
-# Calculate error metrics
-mae = mean_absolute_error(actuals_flat, predictions_flat)
-mse = mean_squared_error(actuals_flat, predictions_flat)
-rmse = np.sqrt(mse)
-mape = mean_absolute_percentage_error(actuals_flat, predictions_flat)
-
-print(f'MAE: {mae:.4f}')
-print(f'MSE: {mse:.4f}')
-print(f'RMSE: {rmse:.4f}')
-print(f'MAPE: {mape:.4f}%')
-into sets of 8 days each, where the 7 days acted as context and 8th day acted as the target output, and careful consideration was taken to make sure the sets did not overlap to prevent data leakage.
+The LSTM model was trained for a context length of a week, with the prediction of day. The datapoints was split into sets of 8 days each, where the 7 days acted as context and 8th day acted as the target output, and careful consideration was taken to make sure the sets did not overlap to prevent data leakage.
 The following metrics were obtained for comparision with LLM's
 
 * Mean Absolute Error (On scaled-down data): **0.0570**
